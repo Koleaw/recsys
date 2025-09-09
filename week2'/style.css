@@ -3,8 +3,8 @@
   --bg: #f4f7f6;
   --card-bg: #ffffff;
   --muted: #6b7280;
-  --accent: #2563eb;         /* blue */
-  --accent-hover: #1e4fd1;   /* darker blue */
+  --accent: #2563eb;
+  --accent-hover: #1e4fd1;
   --ring: rgba(37, 99, 235, 0.35);
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   --radius: 16px;
@@ -16,9 +16,7 @@
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body {
   margin: 0;
@@ -89,17 +87,9 @@ button.primary {
   transition: background 160ms ease, transform 80ms ease;
 }
 
-button.primary:hover {
-  background: var(--accent-hover);
-}
-
-button.primary:active {
-  transform: translateY(1px);
-}
-
-button.primary:focus-visible {
-  outline: 3px solid var(--ring);
-}
+button.primary:hover { background: var(--accent-hover); }
+button.primary:active { transform: translateY(1px); }
+button.primary:focus-visible { outline: 3px solid var(--ring); }
 
 /* Result area */
 #result-box {
@@ -113,10 +103,7 @@ button.primary:focus-visible {
   align-items: center;
 }
 
-#result {
-  margin: 0;
-  font-weight: 700;
-}
+#result { margin: 0; font-weight: 700; }
 
 /* A11y */
 .visually-hidden {
