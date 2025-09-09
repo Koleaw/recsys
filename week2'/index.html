@@ -4,25 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Content-Based Movie Recommender</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <main class="container">
     <h1>Content-Based Movie Recommender</h1>
     <p class="instructions">
-      Выберите фильм, который вам нравится — мы подберём похожие. Процент рядом с названием — это схожесть по жанрам (Jaccard).
+      Выберите фильм — покажем похожие. Процент рядом с названием — схожесть по жанрам (Jaccard).
     </p>
 
     <div class="controls">
       <label for="movie-select" class="visually-hidden">Выберите фильм</label>
       <select id="movie-select" aria-label="Select a movie">
         <option value="" disabled selected>Select a movie…</option>
-        <!-- Опции добавляются скриптом -->
       </select>
 
-      <button type="button" class="primary" onclick="getRecommendations()">
-        Get Recommendations
-      </button>
+      <!-- По ТЗ текст кнопки оставляем на английском -->
+      <button type="button" class="primary" onclick="getRecommendations()">Get Recommendations</button>
     </div>
 
     <div id="result-box" role="status" aria-live="polite">
@@ -30,8 +28,8 @@
     </div>
   </main>
 
-  <!-- ВАЖНО: сначала data.js, потом script.js. ?v=2 — чтобы перебить кэш. -->
-  <script src="data.js?v=2"></script>
-  <script src="script.js?v=2"></script>
+  <!-- ВАЖНО: data.js раньше script.js. Добавлен query (?v=5) для пробития кэша. -->
+  <script src="data.js?v=5"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
