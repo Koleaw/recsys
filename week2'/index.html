@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Content-Based Movie Recommender</title>
+  <link rel="stylesheet" href="style.css?v=7" />
+</head>
+<body>
+  <main class="container">
+    <h1>Content-Based Movie Recommender</h1>
+    <p class="instructions">
+      Select a movie you like, and we'll find similar ones for you! (Similarity is shown in %)
+    </p>
+
+    <div class="controls">
+      <label for="movie-select" class="visually-hidden">Choose a movie</label>
+      <select id="movie-select" aria-label="Select a movie">
+        <option value="" disabled selected>Select a movie…</option>
+      </select>
+
+      <button type="button" class="primary" onclick="getRecommendations()">
+        Get Recommendations
+      </button>
+    </div>
+
+    <div id="result-box" role="status" aria-live="polite">
+      <p id="result">Initializing...</p>
+    </div>
+  </main>
+
+  <!-- ВАЖНО: сначала data.js, затем script.js. ?v=7 пробивает кэш. -->
+  <script src="./data.js?v=7"></script>
+  <script src="./script.js?v=7"></script>
+
+  <!-- На случай отключённого JS -->
+  <noscript>
+    <div style="margin:12px;color:#b91c1c;font-weight:700">
+      JavaScript is disabled; the app cannot run.
+    </div>
+  </noscript>
+</body>
+</html>
