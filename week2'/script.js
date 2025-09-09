@@ -1,121 +1,115 @@
-/**
- * script.js – UI & recommendation logic module.
- * Depends on data.js having loaded `movies`, `ratings`, and `loadData()`.
- */
-
-// --- Helpers ---
-/** Jaccard similarity between two Sets. J(A,B) = |A ∩ B| / |A ∪ B| */
-function jaccard(setA, setB) {
-  if (setA.size === 0 && setB.size === 0) return 0;
-  let intersection = 0;
-  for (const v of setA) if (setB.has(v)) intersection++;
-  const unionSize = new Set([...setA, ...setB]).size;
-  return unionSize === 0 ? 0 : intersection / unionSize;
+/* Base layout */
+:root {
+  --bg: #f4f7f6;
+  --card-bg: #ffffff;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-hover: #1e4fd1;
+  --ring: rgba(37, 99, 235, 0.35);
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --radius: 16px;
 }
 
-/** Format 0..1 to percent string */
-function pct(x, digits = 0) {
-  return `${(x * 100).toFixed(digits)}%`;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-// Initialize app once the page is ready
-window.onload = async () => {
-  const resultEl = document.getElementById('result');
-  if (resultEl) resultEl.innerText = 'Loading data...';
+html, body { height: 100%; }
 
-  await loadData();
-
-  populateMoviesDropdown();
-
-  if (resultEl) {
-    if (movies.length === 0) {
-      resultEl.innerText = 'Data loaded, but no movies were parsed. Check u.item format/path.';
-    } else {
-      resultEl.innerText = 'Data loaded. Please select a movie.';
-    }
-  }
-};
-
-/**
- * Populate the #movie-select dropdown with alphabetized movie titles.
- */
-function populateMoviesDropdown() {
-  const select = document.getElementById('movie-select');
-  if (!select) return;
-
-  select.innerHTML = '<option value="" disabled selected>Select a movie…</option>';
-
-  const sorted = [...movies].sort((a, b) => a.title.localeCompare(b.title));
-  for (const m of sorted) {
-    const opt = document.createElement('option');
-    opt.value = String(m.id);
-    opt.textContent = m.title;
-    select.appendChild(opt);
-  }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: #0f172a;
+  line-height: 1.5;
+  display: grid;
+  place-items: center;
 }
 
-/**
- * Main handler called by the button click.
- * Follows the 7 steps outlined in the specification, and displays similarity in %.
- */
-function getRecommendations() {
-  const select = document.getElementById('movie-select');
-  const resultEl = document.getElementById('result');
-
-  // Step 1: Get user input
-  const selectedVal = select ? select.value : '';
-  if (!selectedVal) {
-    if (resultEl) resultEl.innerText = 'Please select a movie first.';
-    return;
-  }
-  const selectedId = parseInt(selectedVal, 10);
-
-  // Step 2: Find liked movie
-  const likedMovie = movies.find(m => m.id === selectedId);
-  if (!likedMovie) {
-    if (resultEl) resultEl.innerText = 'Selected movie not found. Please try another.';
-    return;
-  }
-
-  // Step 3: Prepare sets and candidate list
-  const likedGenresSet = new Set(likedMovie.genres);
-  const candidateMovies = movies.filter(m => m.id !== likedMovie.id);
-
-  // Step 4: Calculate Jaccard scores
-  const scoredMovies = candidateMovies.map(m => {
-    const candSet = new Set(m.genres);
-    const score = jaccard(likedGenresSet, candSet);
-    return { ...m, score };
-  });
-
-  // Step 5: Sort by score (desc), tie-break by title
-  scoredMovies.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.title.localeCompare(b.title);
-  });
-
-  // Step 6: Take top 2
-  const top = scoredMovies.slice(0, 2);
-
-  // Step 7: Display result with % similarity
-  if (top.length === 0) {
-    if (resultEl) resultEl.innerText = `No recommendations available for "${likedMovie.title}".`;
-    return;
-  }
-
-  const recList = top.map(m => `${m.title} (${pct(m.score, 0)})`).join(', ');
-
-  if (resultEl) {
-    if (likedGenresSet.size === 0) {
-      resultEl.innerText =
-        `Heads up: "${likedMovie.title}" has no genre tags in your data, so all similarities are 0%. ` +
-        `Because you liked "${likedMovie.title}", we recommend: ${recList}.`;
-    } else {
-      resultEl.innerText =
-        `Because you liked "${likedMovie.title}", we recommend: ${recList}.`;
-    }
-  }
+/* Card container */
+.container {
+  width: min(800px, 92vw);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px 28px 24px;
 }
 
-// Expose the handler globally so the inline onclick works
-window.getRecommendations = getRecommendations;
+h1 {
+  margin: 0 0 6px;
+  font-size: 1.75rem;
+  letter-spacing: 0.2px;
+}
+
+.instructions {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+/* Controls */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+#movie-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  appearance: none;
+  background: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow 160ms ease, border-color 160ms ease;
+}
+
+#movie-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 5px var(--ring);
+}
+
+/* Button */
+button.primary {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 160ms ease, transform 80ms ease;
+}
+
+button.primary:hover { background: var(--accent-hover); }
+button.primary:active { transform: translateY(1px); }
+button.primary:focus-visible { outline: 3px solid var(--ring); }
+
+/* Result area */
+#result-box {
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+#result { margin: 0; font-weight: 700; }
+
+/* A11y */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
