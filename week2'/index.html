@@ -10,14 +10,14 @@
   <main class="container">
     <h1>Content-Based Movie Recommender</h1>
     <p class="instructions">
-      Select a movie you like, and we'll find similar ones for you! (Similarity is shown in %)
+      Выберите фильм, который вам нравится — мы подберём похожие. Процент рядом с названием — это схожесть по жанрам (Jaccard).
     </p>
 
     <div class="controls">
-      <label for="movie-select" class="visually-hidden">Choose a movie</label>
+      <label for="movie-select" class="visually-hidden">Выберите фильм</label>
       <select id="movie-select" aria-label="Select a movie">
         <option value="" disabled selected>Select a movie…</option>
-        <!-- Options are populated dynamically -->
+        <!-- Опции добавляются скриптом -->
       </select>
 
       <button type="button" class="primary" onclick="getRecommendations()">
@@ -30,8 +30,8 @@
     </div>
   </main>
 
-  <!-- Order matters: data.js must be loaded before script.js -->
-  <script src="data.js"></script>
-  <script src="script.js"></script>
+  <!-- ВАЖНО: сначала data.js, потом script.js. ?v=2 — чтобы перебить кэш. -->
+  <script src="data.js?v=2"></script>
+  <script src="script.js?v=2"></script>
 </body>
 </html>
