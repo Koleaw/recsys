@@ -3,6 +3,21 @@
  * Depends on data.js having loaded `movies`, `ratings`, and `loadData()`.
  */
 
+// --- Helpers ---
+/** Jaccard similarity between two Sets. J(A,B) = |A ∩ B| / |A ∪ B| */
+function jaccard(setA, setB) {
+  if (setA.size === 0 && setB.size === 0) return 0;
+  let intersection = 0;
+  for (const v of setA) if (setB.has(v)) intersection++;
+  const unionSize = new Set([...setA, ...setB]).size;
+  return unionSize === 0 ? 0 : intersection / unionSize;
+}
+
+/** Format 0..1 to percent string */
+function pct(x, digits = 0) {
+  return `${(x * 100).toFixed(digits)}%`;
+}
+
 // Initialize app once the page is ready
 window.onload = async () => {
   const resultEl = document.getElementById('result');
@@ -13,7 +28,11 @@ window.onload = async () => {
   populateMoviesDropdown();
 
   if (resultEl) {
-    resultEl.innerText = 'Data loaded. Please select a movie.';
+    if (movies.length === 0) {
+      resultEl.innerText = 'Data loaded, but no movies were parsed. Check u.item format/path.';
+    } else {
+      resultEl.innerText = 'Data loaded. Please select a movie.';
+    }
   }
 };
 
@@ -24,12 +43,9 @@ function populateMoviesDropdown() {
   const select = document.getElementById('movie-select');
   if (!select) return;
 
-  // Reset with placeholder
   select.innerHTML = '<option value="" disabled selected>Select a movie…</option>';
 
-  // Sort for UX friendliness
   const sorted = [...movies].sort((a, b) => a.title.localeCompare(b.title));
-
   for (const m of sorted) {
     const opt = document.createElement('option');
     opt.value = String(m.id);
@@ -39,27 +55,8 @@ function populateMoviesDropdown() {
 }
 
 /**
- * Compute Jaccard similarity between two Sets.
- * J(A,B) = |A ∩ B| / |A ∪ B|
- * @param {Set<string>} setA
- * @param {Set<string>} setB
- * @returns {number}
- */
-function jaccard(setA, setB) {
-  if (setA.size === 0 && setB.size === 0) return 0;
-
-  let intersection = 0;
-  for (const v of setA) {
-    if (setB.has(v)) intersection++;
-  }
-
-  const unionSize = new Set([...setA, ...setB]).size;
-  return unionSize === 0 ? 0 : intersection / unionSize;
-}
-
-/**
  * Main handler called by the button click.
- * Follows the 7 steps outlined in the specification.
+ * Follows the 7 steps outlined in the specification, and displays similarity in %.
  */
 function getRecommendations() {
   const select = document.getElementById('movie-select');
@@ -97,20 +94,26 @@ function getRecommendations() {
     return a.title.localeCompare(b.title);
   });
 
-  // Step 6: Take top N (2 as per spec)
+  // Step 6: Take top 2
   const top = scoredMovies.slice(0, 2);
 
-  // Step 7: Display result
+  // Step 7: Display result with % similarity
   if (top.length === 0) {
-    if (resultEl) {
-      resultEl.innerText = `No recommendations available for "${likedMovie.title}".`;
-    }
+    if (resultEl) resultEl.innerText = `No recommendations available for "${likedMovie.title}".`;
     return;
   }
 
-  const recList = top.map(m => m.title).join(', ');
+  const recList = top.map(m => `${m.title} (${pct(m.score, 0)})`).join(', ');
+
   if (resultEl) {
-    resultEl.innerText = `Because you liked "${likedMovie.title}", we recommend: ${recList}.`;
+    if (likedGenresSet.size === 0) {
+      resultEl.innerText =
+        `Heads up: "${likedMovie.title}" has no genre tags in your data, so all similarities are 0%. ` +
+        `Because you liked "${likedMovie.title}", we recommend: ${recList}.`;
+    } else {
+      resultEl.innerText =
+        `Because you liked "${likedMovie.title}", we recommend: ${recList}.`;
+    }
   }
 }
 
