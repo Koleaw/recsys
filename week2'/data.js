@@ -1,47 +1,36 @@
 /**
- * data.js – Data loading & parsing module.
- * Responsible ONLY for fetching and parsing local data files (u.item, u.data).
- * Exposes global variables `movies`, `ratings` and functions `loadData`, `parseItemData`, `parseRatingData`.
+ * data.js — loading & parsing (u.item, u.data)
+ * Exposes globals: movies, ratings, loadData(), parseItemData(), parseRatingData()
  */
+'use strict';
 
-// Global datasets
 let movies = [];
 let ratings = [];
 
-/**
- * Load MovieLens-style data from local files.
- * - Fetches u.item and u.data from the same directory.
- * - Parses them into global `movies` and `ratings`.
- * - Displays a user-friendly error in #result if something goes wrong.
- */
 async function loadData() {
   const resultEl = document.getElementById('result');
+  console.log('[data.js] loadData() start');
 
   try {
-    // --- Load & parse items ---
-    const itemResp = await fetch('u.item');
+    // u.item
+    const itemResp = await fetch('u.item', { cache: 'no-store' });
     if (!itemResp.ok) throw new Error(`Failed to load u.item (HTTP ${itemResp.status})`);
     const itemText = await itemResp.text();
     parseItemData(itemText);
+    console.log(`[data.js] parsed movies: ${movies.length}`);
 
-    // --- Load & parse ratings ---
-    const dataResp = await fetch('u.data');
+    // u.data
+    const dataResp = await fetch('u.data', { cache: 'no-store' });
     if (!dataResp.ok) throw new Error(`Failed to load u.data (HTTP ${dataResp.status})`);
     const dataText = await dataResp.text();
     parseRatingData(dataText);
-
+    console.log(`[data.js] parsed ratings: ${ratings.length}`);
   } catch (err) {
-    console.error(err);
+    console.error('[data.js] loadData() error:', err);
     if (resultEl) resultEl.innerText = `Error loading data: ${err.message}`;
   }
 }
 
-/**
- * Parse u.item text.
- * ML-100k has 19 binary genre flags at the end of each line: [unknown, Action..Western].
- * We expose only the 18 named genres (ignore "unknown").
- * @param {string} text
- */
 function parseItemData(text) {
   const genreNames = [
     "Action","Adventure","Animation","Children's","Comedy","Crime","Documentary",
@@ -52,49 +41,37 @@ function parseItemData(text) {
   const lines = text.split(/\r?\n/);
   for (const line of lines) {
     if (!line.trim()) continue;
-
     const parts = line.split('|');
-    if (parts.length < 5) continue; // guard
+    if (parts.length < 5) continue;
 
     const id = parseInt(parts[0], 10);
     const title = parts[1];
 
-    // The last 19 fields are genre flags; index 0 is 'unknown' -> skip.
     const genres = [];
-    const last19Start = parts.length - 19;
-
+    const start = parts.length - 19; // 19 genre flags: unknown + 18 named
     for (let j = 0; j < 19; j++) {
-      const flag = parts[last19Start + j];
-      if (flag === '1') {
-        if (j > 0) {
-          const g = genreNames[j - 1];
-          if (g) genres.push(g);
-        }
+      const flag = parts[start + j];
+      if (flag === '1' && j > 0) {           // skip "unknown"
+        const g = genreNames[j - 1];
+        if (g) genres.push(g);
       }
     }
-
     movies.push({ id, title, genres });
   }
 }
 
-/**
- * Parse u.data text.
- * Each line: userId \t itemId \t rating \t timestamp
- * @param {string} text
- */
 function parseRatingData(text) {
   const lines = text.split(/\r?\n/);
   for (const line of lines) {
     if (!line.trim()) continue;
-
-    const parts = line.split('\t'); // tabs
+    const parts = line.split('\t');
     if (parts.length < 4) continue;
 
-    const userId = parseInt(parts[0], 10);
-    const itemId = parseInt(parts[1], 10);
-    const rating = parseInt(parts[2], 10);
-    const timestamp = parseInt(parts[3], 10);
-
-    ratings.push({ userId, itemId, rating, timestamp });
+    ratings.push({
+      userId: parseInt(parts[0], 10),
+      itemId: parseInt(parts[1], 10),
+      rating: parseInt(parts[2], 10),
+      timestamp: parseInt(parts[3], 10)
+    });
   }
 }
