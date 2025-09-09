@@ -1,30 +1,21 @@
 /**
- * data.js – Data loading & parsing module.
- * Responsible ONLY for fetching and parsing local data files (u.item, u.data).
- * Exposes global variables `movies`, `ratings` and functions `loadData`, `parseItemData`, `parseRatingData`.
+ * data.js — модуль загрузки и парсинга данных (u.item, u.data).
+ * Экспортирует глобальные: movies, ratings и функции loadData, parseItemData, parseRatingData.
  */
 
-// Global datasets
 let movies = [];
 let ratings = [];
 
-/**
- * Load MovieLens-style data from local files.
- * - Fetches u.item and u.data from the same directory.
- * - Parses them into global `movies` and `ratings`.
- * - Displays a user-friendly error in #result if something goes wrong.
- */
+/** Асинхронно загружает u.item и u.data из той же папки, что index.html */
 async function loadData() {
   const resultEl = document.getElementById('result');
 
   try {
-    // --- Load & parse items ---
     const itemResp = await fetch('u.item');
     if (!itemResp.ok) throw new Error(`Failed to load u.item (HTTP ${itemResp.status})`);
     const itemText = await itemResp.text();
     parseItemData(itemText);
 
-    // --- Load & parse ratings ---
     const dataResp = await fetch('u.data');
     if (!dataResp.ok) throw new Error(`Failed to load u.data (HTTP ${dataResp.status})`);
     const dataText = await dataResp.text();
@@ -32,16 +23,11 @@ async function loadData() {
 
   } catch (err) {
     console.error(err);
-    if (resultEl) resultEl.innerText = `Error loading data: ${err.message}`;
+    if (resultEl) resultEl.innerText = `Ошибка загрузки данных: ${err.message}`;
   }
 }
 
-/**
- * Parse u.item text.
- * ML-100k has 19 binary genre flags at the end of each line: [unknown, Action..Western].
- * We expose only the 18 named genres (ignore "unknown").
- * @param {string} text
- */
+/** Парсинг u.item (в конце 19 бинарных флагов жанров: unknown + 18 именованных) */
 function parseItemData(text) {
   const genreNames = [
     "Action","Adventure","Animation","Children's","Comedy","Crime","Documentary",
@@ -52,42 +38,31 @@ function parseItemData(text) {
   const lines = text.split(/\r?\n/);
   for (const line of lines) {
     if (!line.trim()) continue;
-
     const parts = line.split('|');
-    if (parts.length < 5) continue; // guard
+    if (parts.length < 5) continue;
 
     const id = parseInt(parts[0], 10);
     const title = parts[1];
 
-    // The last 19 fields are genre flags; index 0 is 'unknown' -> skip.
     const genres = [];
     const last19Start = parts.length - 19;
-
     for (let j = 0; j < 19; j++) {
       const flag = parts[last19Start + j];
-      if (flag === '1') {
-        if (j > 0) {
-          const g = genreNames[j - 1];
-          if (g) genres.push(g);
-        }
+      if (flag === '1' && j > 0) { // j=0 — это "unknown", пропускаем
+        const g = genreNames[j - 1];
+        if (g) genres.push(g);
       }
     }
-
     movies.push({ id, title, genres });
   }
 }
 
-/**
- * Parse u.data text.
- * Each line: userId \t itemId \t rating \t timestamp
- * @param {string} text
- */
+/** Парсинг u.data: userId \t itemId \t rating \t timestamp */
 function parseRatingData(text) {
   const lines = text.split(/\r?\n/);
   for (const line of lines) {
     if (!line.trim()) continue;
-
-    const parts = line.split('\t'); // tabs
+    const parts = line.split('\t');
     if (parts.length < 4) continue;
 
     const userId = parseInt(parts[0], 10);
@@ -98,3 +73,4 @@ function parseRatingData(text) {
     ratings.push({ userId, itemId, rating, timestamp });
   }
 }
+
