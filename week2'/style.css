@@ -54,7 +54,6 @@ h1 { margin: 0 0 6px; font-size: 1.75rem; }
   outline: none;
   transition: box-shadow 160ms ease, border-color 160ms ease;
 }
-
 #movie-select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 5px var(--ring);
@@ -93,4 +92,3 @@ button.primary:focus-visible { outline: 3px solid var(--ring); }
   overflow: hidden; clip: rect(1px,1px,1px,1px);
   white-space: nowrap;
 }
-
