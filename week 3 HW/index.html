@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Matrix Factorization Movie Recommender — MF v3</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Matrix Factorization Movie Recommender</h1>
+    <p class="instructions">
+      Place <code>u.item</code> and <code>u.data</code> (MovieLens 100K) next to this page, or upload them below.
+      Train a <strong>biased matrix factorization</strong> model and get user-personalized recommendations.
+    </p>
+
+    <section class="uploader">
+      <div class="field">
+        <label>u.item (optional upload)</label>
+        <input type="file" id="file-item" accept=".item,.txt" />
+      </div>
+      <div class="field">
+        <label>u.data (optional upload)</label>
+        <input type="file" id="file-data" accept=".data,.txt" />
+      </div>
+      <div class="buttons">
+        <button type="button" id="use-uploads">Use uploaded files</button>
+      </div>
+      <p class="hint">If fetch fails on GitHub Pages, add a blank <code>.nojekyll</code> file or just upload the two files above.</p>
+    </section>
+
+    <section class="controls-grid">
+      <div class="field">
+        <label for="user-select">User</label>
+        <select id="user-select">
+          <option value="" selected disabled>Select a user…</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="top-n">Top N</label>
+        <input id="top-n" type="number" min="1" max="50" value="10" />
+      </div>
+
+      <div class="field">
+        <label for="exclude-seen">
+          <input id="exclude-seen" type="checkbox" checked />
+          Exclude already rated
+        </label>
+      </div>
+
+      <div class="field">
+        <label for="factors">Latent factors (K)</label>
+        <input id="factors" type="number" min="4" max="128" value="32" />
+      </div>
+
+      <div class="field">
+        <label for="epochs">Epochs</label>
+        <input id="epochs" type="number" min="1" max="100" value="10" />
+      </div>
+
+      <div class="field">
+        <label for="lr">Learning rate</label>
+        <input id="lr" type="number" step="0.001" min="0.001" max="1" value="0.01" />
+      </div>
+
+      <div class="field">
+        <label for="reg">Regularization (L2)</label>
+        <input id="reg" type="number" step="0.001" min="0" max="1" value="0.05" />
+      </div>
+
+      <div class="field">
+        <label for="val-split">Validation split</label>
+        <input id="val-split" type="number" step="0.01" min="0" max="0.9" value="0.1" />
+      </div>
+
+      <div class="field">
+        <label for="seed">Random seed</label>
+        <input id="seed" type="number" min="1" max="2147483647" value="1337" />
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="primary" id="train-btn" disabled>Train Model</button>
+        <button type="button" id="rec-btn" disabled>Get Recommendations</button>
+      </div>
+    </section>
+
+    <div id="status" class="status">Initializing...</div>
+    <div class="progress">
+      <div id="bar" class="bar" style="width:0%"></div>
+    </div>
+
+    <div id="result-box">
+      <p id="result">Load data first.</p>
+    </div>
+
+    <details class="log-wrap" open>
+      <summary>Training log</summary>
+      <pre id="log"></pre>
+    </details>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
