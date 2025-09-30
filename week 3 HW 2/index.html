@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Matrix Factorization Movie Recommender (TensorFlow.js)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Matrix Factorization Movie Recommender</h1>
+    <p class="instructions">
+      This demo trains a <strong>Matrix Factorization</strong> model entirely in your browser with
+      <code>TensorFlow.js</code> on the MovieLens 100K dataset (<code>u.item</code>, <code>u.data</code>
+      placed next to this page). Pick a user and a movie and press <em>Predict Rating</em>.
+    </p>
+
+    <section class="grid">
+      <div class="field">
+        <label for="user-select">User</label>
+        <select id="user-select">
+          <option selected disabled value="">Select a user…</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="movie-select">Movie</label>
+        <select id="movie-select">
+          <option selected disabled value="">Select a movie…</option>
+        </select>
+      </div>
+
+      <div class="buttons">
+        <button id="predict-btn" class="primary" onclick="predictRating()">Predict Rating</button>
+      </div>
+    </section>
+
+    <div id="result-box">
+      <p id="result">Initializing…</p>
+    </div>
+
+    <details class="log-wrap" open>
+      <summary>Training log</summary>
+      <pre id="log"></pre>
+    </details>
+  </main>
+
+  <!-- 1) TensorFlow.js CDN MUST be before app scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <!-- 2) Data loading/parsing -->
+  <script src="data.js"></script>
+  <!-- 3) Model + UI logic -->
+  <script src="script.js"></script>
+</body>
+</html>
