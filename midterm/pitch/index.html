@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Steam EDA (CSV) — runs fully in the browser</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Steam EDA (CSV) — runs fully in the browser</h1>
+    <p class="hint">
+      One source of truth: Kaggle dataset with three CSVs (we only need two): 
+      <code>steam_game_reviews.csv</code> (interactions) and 
+      <code>games_description.csv</code> (item metadata with genres). 
+      Drop both files below. All processing happens in your browser. No server, no Python.
+    </p>
+
+    <div class="controls">
+      <div class="control">
+        <label for="maxRows">Max interactions (for speed):</label>
+        <input id="maxRows" type="number" value="200000" min="100" step="100">
+      </div>
+      <div class="control">
+        <label for="maxItems">Max items parsed:</label>
+        <input id="maxItems" type="number" value="100000" min="1000" step="1000">
+      </div>
+      <div class="control checkbox">
+        <label><input id="debugMode" type="checkbox" /> Debug mode (log schema + first rows)</label>
+      </div>
+      <div class="buttons">
+        <button id="runBtn" class="primary">Run EDA</button>
+        <button id="resetBtn" class="ghost">Reset</button>
+        <button id="exportBtn" class="ghost" disabled>Export CSV</button>
+      </div>
+    </div>
+
+    <div class="dropzones">
+      <div class="dz">
+        <h3>Reviews (CSV)</h3>
+        <div id="reviewsDrop" class="drop" tabindex="0">Drop your <strong>steam_game_reviews.csv</strong> here (or click)</div>
+        <div class="fileInfo" id="reviewsInfo">No file.</div>
+      </div>
+      <div class="dz">
+        <h3>Item metadata (CSV)</h3>
+        <div id="itemsDrop" class="drop" tabindex="0">Drop your <strong>games_description.csv</strong> here (or click)</div>
+        <div class="fileInfo" id="itemsInfo">No file.</div>
+      </div>
+    </div>
+
+    <div id="status" class="status">Waiting for files...</div>
+
+    <details class="debug" id="debugPanel">
+      <summary>Debug log (click to open)</summary>
+      <pre id="log"></pre>
+    </details>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Headline</h3>
+        <table class="kv" id="headlineTbl">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h3>Genres (Top‑20 by interactions)</h3>
+        <canvas id="genresChart" width="560" height="320" aria-label="Genres bar chart"></canvas>
+        <div class="note">Hover shows values.</div>
+      </section>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Reviews over time (by month)</h3>
+        <canvas id="timeChart" width="560" height="320" aria-label="Time histogram"></canvas>
+      </section>
+
+      <section class="card">
+        <h3>Top games by review count</h3>
+        <table class="kv" id="topGamesTbl">
+          <thead><tr><th>#</th><th>Title</th><th>Reviews</th><th>Positive %</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+
+    <footer class="hint small">
+      Tip: Keep files next to this page (GitHub Pages friendly). In case of performance issues, lower “Max interactions” and “Max items parsed”.
+    </footer>
+  </div>
+
+  <!-- Papa Parse for robust CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

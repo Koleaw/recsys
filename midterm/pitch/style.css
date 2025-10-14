@@ -1,0 +1,44 @@
+/* Basic modern, centered layout */
+:root{
+  --bg:#f4f7f6;
+  --card:#fff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --primary:#3b82f6;
+  --primary-600:#2563eb;
+  --border:#e5e7eb;
+  --shadow:0 10px 25px rgba(2,6,23,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:System-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg)}
+.container{max-width:1100px;margin:24px auto;padding:0 16px}
+h1{font-size:28px;margin:0 0 8px}
+h3{margin:0 0 12px}
+.hint{color:var(--muted);margin:8px 0 20px}
+.hint.small{font-size:12px}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:14px}
+.control{display:flex;flex-direction:column;gap:6px}
+.control input{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff;min-width:160px}
+.control.checkbox{align-items:center}
+.buttons{display:flex;gap:10px;flex-wrap:wrap}
+button{padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+button.primary{background:var(--primary);color:#fff;border-color:transparent}
+button.primary:hover{background:var(--primary-600)}
+button.ghost:hover{background:#fff;transform:translateY(-1px)}
+.dropzones{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0}
+.drop{border:2px dashed var(--border);border-radius:14px;padding:18px;text-align:center;color:var(--muted);background:#fff;cursor:pointer;min-height:96px;display:flex;align-items:center;justify-content:center}
+.drop:focus{outline:2px solid var(--primary)}
+.fileInfo{margin-top:6px;color:var(--muted);font-size:13px}
+.status{margin:8px 0 10px;padding:10px 12px;border-radius:10px;background:#eef2ff;border:1px solid #c7d2fe;color:#1e293b}
+.debug{margin-top:6px}
+#log{background:#0b1020;color:#d1e7ff;padding:12px;border-radius:12px;max-height:220px;overflow:auto;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.kv{width:100%;border-collapse:collapse}
+.kv th,.kv td{border-bottom:1px solid var(--border);padding:8px 6px;text-align:left}
+.kv tr:last-child td{border-bottom:none}
+.note{color:var(--muted);font-size:12px;margin-top:6px}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .dropzones{grid-template-columns:1fr}
+}
