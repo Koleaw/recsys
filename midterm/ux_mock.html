@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Steam Recommender — For You (Mock)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<style>
+  :root { --bg:#f4f7f6; --card:#fff; --txt:#0e1726; --muted:#5b667a; --chip:#eef2ff; --accent:#2563eb; }
+  body{margin:0;background:var(--bg);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+  .wrap{max-width:1100px;margin:32px auto;padding:0 16px;}
+  .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .title{font-size:22px;font-weight:700;color:var(--txt)}
+  .tip{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 6px 18px rgba(14,23,38,.06);overflow:hidden;border:1px solid #e9eef6}
+  .thumb{height:130px;background:linear-gradient(135deg,#475569,#1f2937)}
+  .cnt{padding:12px}
+  .name{font-weight:700;color:var(--txt);margin:0 0 6px 0;font-size:15px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .chip{font-size:12px;background:var(--chip);padding:5px 8px;border-radius:999px;border:1px solid #dbe4ff}
+  .why{font-size:12px;color:var(--muted)}
+  .bar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+  .bar .kpi{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;border-radius:999px;padding:4px 8px;font-size:12px}
+  .bar .kpi.bad{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+  @media (max-width:960px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">For You</div>
+      <div class="tip">Because you like <b>Action</b> & played <b>Strategy</b> for 120h • Fresh & long-play picks</div>
+    </div>
+
+    <div class="bar">
+      <div class="kpi">Shallow HR@10 (val): 0.24</div>
+      <div class="kpi">Deep HR@10 (val): 0.28</div>
+      <div class="kpi bad">Cold-start? Fall back to genre-popular</div>
+    </div>
+
+    <div class="grid">
+      <!-- repeatable card -->
+      <div class="card">
+        <div class="thumb"></div>
+        <div class="cnt">
+          <p class="name">Gunfire Reborn</p>
+          <div class="chips">
+            <span class="chip">Because you play: Rogue-lite</span>
+            <span class="chip">Similar to: Hades</span>
+            <span class="chip">High session length (90%tile)</span>
+          </div>
+          <div class="why">Match by user-id ⊗ genres → dot product (Deep two-tower)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="thumb"></div>
+        <div class="cnt">
+          <p class="name">Risk of Rain 2</p>
+          <div class="chips">
+            <span class="chip">Because you liked: Action</span>
+            <span class="chip">Co-op friendly</span>
+            <span class="chip">Low churn cohort</span>
+          </div>
+          <div class="why">Item emb + genre MLP → user emb • item emb</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="thumb"></div>
+        <div class="cnt">
+          <p class="name">Hollow Knight</p>
+          <div class="chips">
+            <span class="chip">Metroidvania</span>
+            <span class="chip">High positive share</span>
+            <span class="chip">You own: Ori and the Blind Forest</span>
+          </div>
+          <div class="why">Content + behavior signals improve cold-start</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="thumb"></div>
+        <div class="cnt">
+          <p class="name">Valheim</p>
+          <div class="chips">
+            <span class="chip">Open-world Survival</span>
+            <span class="chip">Friends also played</span>
+            <span class="chip">Genre distance &lt; 0.3</span>
+          </div>
+          <div class="why">Explainability: top-3 reasons per rec</div>
+        </div>
+      </div>
+
+      <!-- можно продублировать ещё 4–8 карточек для полноты скрина -->
+    </div>
+  </div>
+</body>
+</html>
